@@ -1,0 +1,59 @@
+<evaluation>
+  <!--
+    Read-only evaluation suite for artifact-pylon-mcp.
+    Each question requires multiple tool calls and exercises a different surface area
+    of the Pylon API. Answers are verifiable string-comparisons against live data.
+    NOTE: answers will vary by tenant — fill in expected values once you've run them
+    against your own Pylon workspace at least once.
+  -->
+
+  <qa_pair>
+    <question>Using the pylon_get_me tool, what is the email address of the user that the configured PYLON_API_TOKEN belongs to?</question>
+    <answer>__FILL_IN_ONCE_VERIFIED__</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>How many distinct knowledge bases exist in the Pylon workspace? (Use pylon_get_knowledge_bases.)</question>
+    <answer>__FILL_IN_ONCE_VERIFIED__</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>List the title of every published article in the first knowledge base returned by pylon_get_knowledge_bases. How many of them are published (is_published=true)?</question>
+    <answer>__FILL_IN_ONCE_VERIFIED__</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>Find the issue with the highest number (most recent ID) created in the last 7 days using pylon_get_issues. What is its current state and assignee_id?</question>
+    <answer>__FILL_IN_ONCE_VERIFIED__</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>Using pylon_search_accounts, find the account whose name contains the substring "Acme". What is its primary domain?</question>
+    <answer>__FILL_IN_ONCE_VERIFIED__</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>How many custom fields are defined in the Pylon workspace, and how many of them have type "select"? Use pylon_get_custom_fields.</question>
+    <answer>__FILL_IN_ONCE_VERIFIED__</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>List all teams in the workspace using pylon_get_teams. Which team has the most members? Return its name.</question>
+    <answer>__FILL_IN_ONCE_VERIFIED__</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>Using pylon_get_tags, find the tag with the highest usage_count (or alphabetically first if no usage_count is exposed). What is its name?</question>
+    <answer>__FILL_IN_ONCE_VERIFIED__</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>For the most recently-created issue (in the last 24 hours), use pylon_get_issue_messages to count how many messages it has and identify the role (user vs contact) of the message author who sent the most recent message.</question>
+    <answer>__FILL_IN_ONCE_VERIFIED__</answer>
+  </qa_pair>
+
+  <qa_pair>
+    <question>Using pylon_get_issue_statuses, list every status name available in the workspace. How many are in the "closed" category vs "open" category?</question>
+    <answer>__FILL_IN_ONCE_VERIFIED__</answer>
+  </qa_pair>
+</evaluation>
