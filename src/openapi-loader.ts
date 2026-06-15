@@ -90,23 +90,34 @@ export function deref(
     return deref(target, spec, new Set([...seen, refName]));
   }
 
-  // Recurse into known schema fields
+  // Generic deep walk: dereference $refs wherever they appear (properties,
+  // items, additionalProperties, patternProperties, not, if/then/else, $defs,
+  // oneOf/anyOf/allOf, …) so no raw "#/components/schemas/…" ref can survive
+  // into the emitted tool schema — local grammar engines (vLLM xgrammar/
+  // guidance) reject unresolved refs. Data-bearing keys are copied verbatim.
+  const DATA_KEYS = new Set([
+    "enum", "required", "default", "example", "examples", "const",
+  ]);
+  const SCHEMA_MAP_KEYS = new Set([
+    "properties", "patternProperties", "$defs", "definitions",
+  ]);
+
   const out: JsonSchema = {};
   for (const [key, val] of Object.entries(schema)) {
     if (val == null) continue;
-    if (key === "properties" && typeof val === "object") {
-      const props: Record<string, JsonSchema> = {};
-      for (const [propName, propSchema] of Object.entries(val as Record<string, JsonSchema>)) {
-        props[propName] = deref(propSchema, spec, seen);
+    if (key.startsWith("x-")) continue; // drop vendor extensions
+    if (DATA_KEYS.has(key)) {
+      out[key] = val; // arbitrary data, not a schema
+    } else if (SCHEMA_MAP_KEYS.has(key) && typeof val === "object" && !Array.isArray(val)) {
+      const m: Record<string, JsonSchema> = {};
+      for (const [n, s] of Object.entries(val as Record<string, JsonSchema>)) {
+        m[n] = deref(s, spec, seen);
       }
-      out.properties = props;
-    } else if (key === "items") {
-      out.items = deref(val as JsonSchema, spec, seen);
-    } else if (key === "oneOf" || key === "anyOf" || key === "allOf") {
-      out[key] = (val as JsonSchema[]).map((s) => deref(s, spec, seen));
-    } else if (key.startsWith("x-")) {
-      // Drop vendor extensions — they bloat the schema with go-specific noise
-      continue;
+      out[key] = m;
+    } else if (Array.isArray(val)) {
+      out[key] = val.map((v) => (v && typeof v === "object" ? deref(v as JsonSchema, spec, seen) : v));
+    } else if (typeof val === "object") {
+      out[key] = deref(val as JsonSchema, spec, seen);
     } else {
       out[key] = val;
     }
